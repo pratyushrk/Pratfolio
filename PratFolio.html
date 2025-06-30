@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coming Soon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #A6DAF6;
+      overflow: hidden;
+      font-family: 'Pacifico', cursive;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cloud-box {
+      position: relative;
+      width: 360px;
+      height: 202.5px;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cloud-svg {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .cloud-text {
+      font-size: 2.25rem;
+      color: #41729f;
+      z-index: 2;
+      width: 80%;
+      text-align: center;
+      line-height: 1.2;
+      position: absolute;
+    }
+
+    .decor {
+      position: absolute;
+      user-select: none;
+    }
+
+    .star { color: #FFD93D; font-size: 1.5rem; }
+    .heart { color: #FF7DA3; font-size: 1.5rem; }
+    .cloud { font-size: 3rem; animation-name: floatCloud; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+    .twinkle { font-size: 1.5rem; }
+    .daisy { font-size: 1.5rem; }
+    .sparkle { color: #ffffffb0; font-size: 1.25rem; }
+
+    .rainbow {
+      position: fixed;
+      bottom: -39px;
+      right: -25px;
+      font-size: 7rem;
+      z-index: 4;
+    }
+
+    @keyframes floatCloud {
+      0%   { transform: translate(0px, 0px); }
+      25%  { transform: translate(1.5px, -1.5px); }
+      50%  { transform: translate(-1.5px, 1.5px); }
+      75%  { transform: translate(1.5px, 1.5px); }
+      100% { transform: translate(0px, 0px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="cloud-box">
+    <svg class="cloud-svg" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M130 160c-25 10-70-10-70-50s35-65 70-50c10-30 70-40 100-15 25-15 65 5 65 40 25 5 35 30 30 50s-30 35-50 30H130z" fill="#ffecf4" stroke="#f9d7e9" stroke-width="4" />
+    </svg>
+    <div class="cloud-text">Coming Soon</div>
+  </div>
+
+  <div class="rainbow">🌈</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const symbols = [
+        { char: '🌼', className: 'daisy', count: 7 },
+        { char: '💫', className: 'twinkle', count: 11 },
+        { char: '❤', className: 'heart', count: 19 },
+        { char: '★', className: 'star', count: 11 },
+        { char: '☁️', className: 'cloud', count: 15 },
+        { char: '✨', className: 'sparkle', count: 11 }
+      ];
+
+      const usedPositions = [];
+      const GRID_ROWS = 10;
+      const GRID_COLS = 10;
+
+      function getElementSize(className) {
+        const temp = document.createElement('div');
+        temp.className = `decor ${className}`;
+        temp.style.position = 'absolute';
+        temp.style.visibility = 'hidden';
+        temp.textContent = 'M';
+        document.body.appendChild(temp);
+        const size = temp.getBoundingClientRect();
+        document.body.removeChild(temp);
+        return size;
+      }
+
+      const cellUsed = Array.from({ length: GRID_ROWS }, () => Array(GRID_COLS).fill(false));
+
+      symbols.forEach(({ char, className, count }) => {
+        const size = getElementSize(className);
+
+        let placedCount = 0;
+        while (placedCount < count) {
+          const row = Math.floor(Math.random() * GRID_ROWS);
+          const col = Math.floor(Math.random() * GRID_COLS);
+
+          if (cellUsed[row][col]) continue;
+
+          const top = (row + Math.random() * 0.5) * (window.innerHeight / GRID_ROWS) - size.height / 2;
+          const left = (col + Math.random() * 0.5) * (window.innerWidth / GRID_COLS) - size.width / 2;
+
+          const el = document.createElement('div');
+          el.className = `decor ${className}`;
+          el.textContent = char;
+          el.style.top = `${top}px`;
+          el.style.left = `${left}px`;
+
+          if (className === 'cloud') {
+            const duration = (5 + Math.random() * 3).toFixed(2);
+            const delay = (Math.random() * 2).toFixed(2);
+            el.style.animationDuration = `${duration}s`;
+            el.style.animationDelay = `${delay}s`;
+          }
+
+          document.body.appendChild(el);
+          cellUsed[row][col] = true;
+          placedCount++;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
